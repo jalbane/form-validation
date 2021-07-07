@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> 
+		</title>
+		<link rel="stylesheet" href="style.css" type = "text/css">
+	</head>
+	<body>
+		<div id="loginField"> 
+			<div id = "error"></div>
+			<form id="userCredentials" action="/" method = "POST" onsubmit="submitForm(event)">
+				<input required type="text" placeholder="Email" id="userEmail" name ="email"></input>
+				<input required type="password" placeholder="Password" id="userPassword" name="password"></input>
+			<button type="submit" > Login </button>
+			</form>
+		</div>
+		<div style="text-align: center;">
+			Not registered? <a href="/register"> click here. <a/>
+		</div>
+	</body>
+	<script defer type="text/javascript" src="/public/app.js"> </script>
+</html>

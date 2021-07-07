@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+		<title> 
+		</title>
+		<link rel="stylesheet" href="style.css" type = "text/css">
+	</head>
+	<body>
+		<div id="loginField"> 
+			<div id = "error"></div>
+			<form id="userCredentials" action = '/register' method = "POST" onsubmit="submitForm(event)"> 
+				<input required type="text" placeholder="Email" id="userEmail" name="email" ></input> <!--onchange="checkEmail(event)"-->
+				<input required type="password" placeholder="Password" id="userPassword" name="password" ></input>
+				<input id = "button" type="submit">
+			</form>
+		</div>
+	</body>
+	<script defer type="text/javascript" src="/public/app.js"> </script>
+</html>
