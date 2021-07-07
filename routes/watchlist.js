@@ -58,7 +58,7 @@ router.post('/watchlist', pushWatchlist, (req, res)=>{
 	let [emailName, host] = email.split('%40')
 	email = [emailName, host].join('@')
 
-		MongoClient.connect(url, function(err, db){
+		MongoClient.connect(url, {useUnifiedTopology: true},function(err, db){
 			if (err) throw err;
 			let dbo = db.db('userdb') 		
 			dbo.collection("watchlist").updateOne(
