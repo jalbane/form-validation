@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-require('dotenv').config()
+//require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const MongoClient = require('mongodb').MongoClient
 const url = `${process.env.DB_URL}`;
