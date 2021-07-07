@@ -20,7 +20,7 @@ function getWatchlist(req, res, next){
 			if (result == null){
 				next()
 			}else if(!result.ticker.length ){
-				console.log(result.ticker.length)
+
 				console.log('empty name and price')
 				res.locals.watchlist = []
 				res.locals.tickerLength = 0;
@@ -28,6 +28,7 @@ function getWatchlist(req, res, next){
 				next();
 			}
 			else{
+
 				res.locals.i = 0;
 				res.locals.tickerLength = result.ticker.length;
 				res.locals.watchlist = result;
