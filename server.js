@@ -26,6 +26,7 @@ app.use(session({secret: "tacocat",
 				 saveUninitialized: true
 				}));
 app.set('views', path.join(__dirname, 'views'))
+app.set('styles', path.join(__dirname, 'styles'))
 app.set('view-engine', 'ejs')
 app.use('/', indexRouter);
 app.use('/', registerRouter);
