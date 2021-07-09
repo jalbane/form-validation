@@ -1,25 +1,29 @@
-<h1>Register</h1>
-	<% if(typeof alert != 'undefined') { %>
-	            <% alert.forEach(function(error) { %>
-	                <div role="alert">
-	                    Invalid <%= error.param %>
-	                  </div>
-	            <% }) %>
-	        <% } %>
-<form action="/register" method = POST onsubmit="submitForm(event)">
-	<div>
-		<label for="name">Name</label>
-		<input type="text" id = "name" name="name" required/>
-	</div>
-	<div>
-		<label for="email">Email</label>
-		<input type="email" id = "email" name="email" required/>
-	</div>
-	<div>
-		<label for="password">Password</label>
-		<input type="password" id = "password" name="password" required/>
-	</div>
-	<input type="submit"/> 
-</form>
-<a href="/login">Login</a>
-<script type="text/javascript" src="/public/app.js">
+<body>
+	<main><h5>Register</h5>
+		<% if(typeof alert != 'undefined') { %>
+					<% alert.forEach(function(error) { %>
+						<div role="alert">
+							Invalid <%= error.param %>
+						</div>
+					<% }) %>
+				<% } %>
+		<form action="/register" method = POST>
+			<div>
+				<label for="name">Name</label>
+				<input type="text" id = "name" name="name" required/>
+			</div>
+			<div>
+				<label for="email">Email</label>
+				<input type="email" id = "email" name="email" required/>
+			</div>
+			<div>
+				<label for="password">Password</label>
+				<input type="password" id = "password" name="password" required/>
+			</div>
+			<button type="submit"> Register </button>
+		</form>
+		<div class = "login"> Already registered? <a href="/login">Login</a> </div>
+	</main>
+</body>
+
+<link rel="stylesheet" href="/styles/register.css"></link>
