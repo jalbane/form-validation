@@ -1,18 +1,29 @@
-<h1>Hi <%= name %></h1>
- 
-<p> You made it to the home page! You'll be able to add some stock tickers that you'd like to keep an eye on here. </p>
+<body>
+	<main>
+		<h1>Hi <%= name %></h1>
+	
+		<p> You made it to the home page! You'll be able to add some stock tickers that you'd like to keep an eye on here. </p>
 
-<%if (tickerLength) { %>
- 	<%while (i < tickerLength) { %>
- 		<ul>
-		 	<%= watchlist.ticker[i].name%> 
-		 	<%= watchlist.ticker[i].price%> 
-		</ul>
-		<% i++ %>
- 	<% } %>
-<% } if (watchlist.length == 0) { %>
-	<p> Nothing to show right now, you must update your <a href="/watchlist"> watchlist. </a> </p>
+		<%if (tickerLength) { %>
+			<table>
+				<th> Watchlist </th>
+				<tbody>
+				<%while (i < tickerLength) { %>
+					<tr>
+						<td><%= watchlist.ticker[i].name%> </td>
+						<td><%= watchlist.ticker[i].price%> </td>
+					</tr>
+					<% i++ %>
+				<% } %>	
+				</tbody>		
+			</table>
+		<% } if (watchlist.length == 0) { %>
+			<p> Nothing to show right now, you must update your <a href="/watchlist"> watchlist. </a> </p>
 
-<% } if (tickerLength) { %>
-	<h4> Searching for more? <a href="/watchlist"> add to list </a> </h4>
-<% } %>
+		<% } if (tickerLength) { %>
+			<aside> Searching for more? <a href="/watchlist"> add to list </a></aside>
+		<% } %>
+
+	</main>
+</body>
+<link rel="stylesheet" href="/styles/index.css"></link>

@@ -1,0 +1,50 @@
+body{
+    width: auto;
+    background-color: whitesmoke;
+}
+main{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+a{
+    text-decoration: none;
+    color:black;
+    font-weight: 600;
+ 
+}
+
+table{
+    width: 30%;
+    margin-left: 20%;
+    float: left;
+    display: inline-grid;
+    padding: 5px;
+    justify-content: center;
+
+}
+
+td{
+    width: 150px;
+    text-align: center;
+}
+
+th{
+    position:relative;
+    width: 300px;
+}
+
+tr{
+    padding: 15px;
+
+}
+
+aside{  
+    float: right;
+    margin-right: 20%;
+    display: inline;
+    width: 30%;
+}
