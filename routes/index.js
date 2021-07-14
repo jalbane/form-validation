@@ -7,7 +7,7 @@ const url = `${process.env.DB_URL}`;
 const StockSocket = require('stocksocket');
 
 function getWatchlist(req, res, next){
-	MongoClient.connect(url, function(err, db){
+	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db){
 		//console.log(req.headers.cookie)
 		let email = req.headers.cookie.split('cookieEmail=')[1].split(';')[0]
 		let [emailName, host] = email.split('%40')
@@ -18,22 +18,17 @@ function getWatchlist(req, res, next){
 		dbo.collection("watchlist").findOne({userEmail: email}, function(err, result){
 			if (err) throw err;
 			if (result == null){
-				next()
 			}else if(!result.ticker.length ){
-
-				console.log('empty name and price')
 				res.locals.watchlist = []
 				res.locals.tickerLength = 0;
 				res.locals.i = 0;
-				next();
 			}
 			else{
-
 				res.locals.i = 0;
 				res.locals.tickerLength = result.ticker.length;
 				res.locals.watchlist = result;
-				next();
 			}
+			next();
 		})
 	})
 }

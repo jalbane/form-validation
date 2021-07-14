@@ -12,17 +12,34 @@ router.get('/watchlist', (req, res) => {
 	let token = req.headers.cookie.split('cookie=')[1].split(';')[0]; 
 
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded)=> {
-		res.render('watchlist.ejs',{name: decoded.name});
+		res.locals.name = decoded.name
+		res.render('watchlist.ejs',{name: res.locals.name, error: err});
 	})
 })
 
-router.post('/watchlist', (req, res)=>{
-	let tickername = req.body.tickerName;
+function searchWatchlist(req, res, next){
+	res.locals.tickername = req.body.tickerName.toUpperCase();
 
 	let email = req.headers.cookie.split('cookieEmail=')[1].split(';')[0]
 	let [emailName, host] = email.split('%40')
-	email = [emailName, host].join('@')
+	res.locals.email = [emailName, host].join('@')
 
+	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db){
+		let dbo = db.db('userdb')
+		dbo.collection('watchlist').findOne({userEmail: res.locals.email}, async (error, result) => {
+			if (error) throw error;
+			await result
+			for (const element of result.ticker){
+				if (element.name === res.locals.tickername){
+					return res.render('watchlist.ejs', {name: res.locals.name, error: 'You cannot add duplicates to your watchlist.'})
+				}
+			}
+			next();
+		})
+	})
+}
+
+router.post('/watchlist', searchWatchlist, (req, res)=>{
 	// Unsubscribe
 	var unsubscribe = function(symbol) {
 		socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol}));
@@ -31,7 +48,7 @@ router.post('/watchlist', (req, res)=>{
 	const socket = new WebSocket('wss://ws.finnhub.io?token=c3ij7qaad3ib8lb87b3g');
 	// Connection opened -> Subscribe
 	socket.addEventListener('open', function (event) {
-		socket.send( JSON.stringify({'type':'subscribe', 'symbol': req.body.tickerName}))
+		socket.send( JSON.stringify({'type':'subscribe', 'symbol': res.locals.tickername}))
 	});		
 
 	// Listen for messages
@@ -39,22 +56,22 @@ router.post('/watchlist', (req, res)=>{
 		res.locals.arr = await JSON.parse(event.data);
 		//if error occurs with request return home
 		if (res.locals.arr.type === "ping"){
-			unsubscribe(req.body.tickerName)
-			socket.close()
+
 			return res.redirect('/home')
 		}
-		else{
-			unsubscribe(req.body.tickerName);
+		else{			
+			let fixedPrice = res.locals.arr.data[0].p.toFixed(2)
+			unsubscribe(res.locals.tickername);
 			socket.close();		
 			MongoClient.connect(url, {useUnifiedTopology: true}, async function(err, db){
 			if (err) throw err;
-			let dbo = db.db('userdb') 		
+			let dbo = db.db('userdb')
 			await dbo.collection("watchlist").updateOne(
 				{
-					userEmail: email
+					userEmail: res.locals.email
 				},
 				{
-					$push:  {ticker: {name: res.locals.arr.data[0].s, price: res.locals.arr.data[0].p} }
+					$push:  {ticker: {name: res.locals.arr.data[0].s, price: fixedPrice} }
 				}
 			)	
 			res.redirect('/home')
