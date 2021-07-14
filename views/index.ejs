@@ -10,8 +10,8 @@
 				<tbody>
 				<%while (i < tickerLength) { %>
 					<tr>
-						<td><%= watchlist.ticker[i].name%> </td>
-						<td><%= watchlist.ticker[i].price%> </td>
+						<td><%= watchlist.ticker[i].name%></td>
+						<td>$ <%= watchlist.ticker[i].price%></td>
 					</tr>
 					<% i++ %>
 				<% } %>	
@@ -21,7 +21,7 @@
 			<p> Nothing to show right now, you must update your <a href="/watchlist"> watchlist. </a> </p>
 
 		<% } if (tickerLength) { %>
-			<aside> Searching for more? <a href="/watchlist"> add to list </a></aside>
+			<aside> Searching for more? <a href="/watchlist"> Add to list </a></aside>
 		<% } %>
 
 	</main>
