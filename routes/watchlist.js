@@ -10,10 +10,11 @@ const WebSocket = require('ws');
 router.get('/watchlist', (req, res) => {
 	//console.log("line 18 \n\n", req.session)	
 	let token = req.headers.cookie.split('cookie=')[1].split(';')[0]; 
-
+	let name = req.headers.cookie.split('name=')[1].split(';')[0];
+	name = name.split('%20')[0]
+	
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded)=> {
-		res.locals.name = decoded.name
-		res.render('watchlist.ejs',{name: res.locals.name, error: err});
+		res.render('watchlist.ejs',{name: name, error: err});
 	})
 })
 
@@ -24,6 +25,9 @@ function searchWatchlist(req, res, next){
 	let [emailName, host] = email.split('%40')
 	res.locals.email = [emailName, host].join('@')
 
+	let name = req.headers.cookie.split('name=')[1].split(';')[0];
+	name = name.split('%20')[0]
+
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db){
 		let dbo = db.db('userdb')
 		dbo.collection('watchlist').findOne({userEmail: res.locals.email}, async (error, result) => {
@@ -31,7 +35,7 @@ function searchWatchlist(req, res, next){
 			await result
 			for (const element of result.ticker){
 				if (element.name === res.locals.tickername){
-					return res.render('watchlist.ejs', {name: res.locals.name, error: 'You cannot add duplicates to your watchlist.'})
+					return res.render('watchlist.ejs', {name: name, error: 'You cannot add duplicates to your watchlist.'})
 				}
 			}
 			next();

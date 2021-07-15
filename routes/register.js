@@ -20,7 +20,6 @@ router.use(cookieParser());
 
 router.post('/register'/*, 
 	body('email').isEmail(), body('password').isStrongPassword({minLength: 6, minSymbols: 0})*/, (req, res)=>{
-		console.log('hello from post method register route')
 		const errors = validationResult(req);
 		if(!errors.isEmpty()){
 			const alert = errors.array()
@@ -28,7 +27,7 @@ router.post('/register'/*,
 		}  
 
 		//connect to db
-		MongoClient.connect(url, async function(err, db) {
+		MongoClient.connect(url, {useUnifiedTopology: true},async function(err, db) {
 			if (err) throw err
 	
 	  		//prep information to be pushed to database 
@@ -60,12 +59,13 @@ router.post('/register'/*,
 			  		dbo.collection("registeredUsers").insertOne(user, function(err, result) {
 			    		if (err) throw err;
 			    		req.session.user = user.userName;
-			    		res.cookie('cookieEmail', user.userEmail)
-			    		res.cookie('cookie', accessToken);
+			    		res.cookie('cookieEmail', user.userEmail, {expires: new Date(Date.now() + 86400000), httpOnly: true, secure: true })
+						res.cookie('name', user.userName, {expires: new Date(Date.now() + 86400000), httpOnly: true, secure: true })
+			    		res.cookie('cookie', accessToken, {expires: new Date(Date.now() + 86400000), httpOnly: true, secure: true });
 			    		res.redirect('/home');
 			  		});
 			  	}else{
-					return res.status(403).send("That username is already registered.");
+					return res.status(403).send("That email is already registered.");
 		  		}
 			})
 		});	
