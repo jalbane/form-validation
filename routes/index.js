@@ -5,7 +5,9 @@ const jwt = require('jsonwebtoken')
 const MongoClient = require('mongodb').MongoClient
 const url = `${process.env.DB_URL}`;
 const StockSocket = require('stocksocket');
+var cookieParser = require('cookie-parser')
 
+router.use(cookieParser())
 function getWatchlist(req, res, next){
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db){
 		//console.log(req.headers.cookie)
@@ -38,7 +40,9 @@ router.get('/home', getWatchlist, (req, res) => {
 	let token = req.headers.cookie.split('cookie=')[1].split(';')[0]; 
 
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded)=> {
-		res.render('index.ejs',{name: decoded.name});
+		let name = req.headers.cookie.split('name=')[1].split(';')[0]
+		name = name.split('%20')[0]
+		res.render('index.ejs',{name: name});
 	})
 })
 

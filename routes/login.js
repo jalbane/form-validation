@@ -14,7 +14,7 @@ router.use(flash());
 
 router.post('/login', (req, res)=>{
 	//connect to db
-	MongoClient.connect(url, {useUnifiedTopology: false}, async function(err, db) {
+	MongoClient.connect(url, {useUnifiedTopology: true}, async function(err, db) {
   		if (err) throw err;
   		//prep information to be pushed to database
   		var dbo = db.db("userdb");
@@ -22,20 +22,24 @@ router.post('/login', (req, res)=>{
 
   		
   		const options = {"upsert": false}
-  		dbo.collection('registeredUsers').find(query).toArray( async (err, result)=> {
+  		dbo.collection('registeredUsers').findOne(query, async (err, result)=> {
   			if (err) throw err;
-  			await bcrypt.compare(req.body.password, result[0].userPassword, async (err, hash)=>{
+			if (!result){
+				return res.send("The email provided has not been registered. Please register an account.");
+			}
+  			await bcrypt.compare(req.body.password, result.userPassword, async (err, hash)=>{
   				if (err) throw err;
-          if (!hash) {
-            return res.render('login.ejs')
-          }
-          else {
-            req.session.user = req.body.name;
-            const accessToken = await jwt.sign({name: result[0].userName}, process.env.ACCESS_TOKEN_SECRET);
-            res.cookie('cookieEmail', query.userEmail)
-            res.cookie('cookie', accessToken);
-            res.redirect('/home');
-          }
+			if (!hash) {
+				return res.render('login.ejs')
+			}
+			else {
+				req.session.user = req.body.name;
+				const accessToken = await jwt.sign({name: result.userName}, process.env.ACCESS_TOKEN_SECRET);
+				res.cookie('cookieEmail', query.userEmail, {expires: new Date(Date.now() + 86400000), httpOnly: true, secure: true })
+				res.cookie('name', result.userName, {expires: new Date(Date.now() + 86400000), httpOnly: true, secure: true })
+				res.cookie('cookie', accessToken, {expires: new Date(Date.now() + 86400000), httpOnly: true, secure: true });
+				res.redirect('/home');
+			}
   			})
   		})
 	});	
