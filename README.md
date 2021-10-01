@@ -4,5 +4,5 @@ Full stack project where new users can register an account, login and start usin
 
 
 gh repo clone jalbane/mkt-watchlist
-npm init
+npm install
 node server.js
